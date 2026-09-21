@@ -18,7 +18,7 @@ import tempfile
 import time
 import httpx
 from PIL import Image
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -82,7 +82,7 @@ def run_workflows(page, output):
         page.locator('[name="persona"]').select_option(persona)
         page.get_by_role('button', name='进入演示社团').click()
         page.locator('#main h1').wait_for()
-        page.wait_for_function("document.querySelector('#account').textContent !== '登录'")
+        expect(page.locator('#account')).not_to_have_text('登录')
     page.on('dialog', lambda dialog: dialog.accept())
     sign_in('member')
     page.get_by_role('heading', name='今天，也有新的灵感。').wait_for()
@@ -108,12 +108,12 @@ def run_workflows(page, output):
     page.get_by_role('button', name='提交审核', exact=True).click()
     page.get_by_role('heading', name='浏览器验收：森林里的新镜头').wait_for()
     assert page.locator('main .tag.pending').count() == 1
-    page.wait_for_function("document.querySelector('[data-media]')?.src.startsWith('blob:')")
+    expect(page.locator('[data-media]')).to_have_attribute('src', re.compile(r'^blob:'))
     record('image upload and pending post persist through API; untrusted HTML is text')
     sign_in('owner'); route('#manage')
     article = page.locator('article').filter(has=page.get_by_role('heading', name='浏览器验收：森林里的新镜头 ↗'))
     article.get_by_role('button', name='通过审核').click()
-    page.wait_for_function("!document.querySelector('article .review-box')")
+    expect(page.locator('article .review-box')).to_have_count(0)
     record('owner reviews pending post')
     sign_in('next')
     page.get_by_role('heading', name='浏览器验收：森林里的新镜头', exact=True).click()
@@ -124,7 +124,7 @@ def run_workflows(page, output):
     sign_in('owner'); route('#manage')
     comment = page.locator('article').filter(has_text='可以降低前景饱和度来改善景深。')
     comment.get_by_role('button', name='通过审核').click()
-    page.wait_for_function("!document.querySelector('article .review-box')")
+    expect(page.locator('article .review-box')).to_have_count(0)
     record('owner reviews a comment')
     sign_in('applicant'); route('#clubs')
     club = page.locator('article').filter(has=page.get_by_role('heading', name='动画研习社', exact=True))
