@@ -83,6 +83,17 @@ def run_workflows(page, output):
         page.get_by_role('button', name='进入演示社团').click()
         page.locator('#main h1').wait_for()
         expect(page.locator('#account')).not_to_have_text('登录')
+    def layout(value, label, widths=(320, 390)):
+        """Open a route at phone widths and assert the document does not overflow."""
+        for width in widths:
+            page.set_viewport_size({'width': width, 'height': 900})
+            route(value)
+            expect(page.locator('#main .state.loading')).to_have_count(0)
+            page.locator('#main h1').first.wait_for()
+            overflow = page.evaluate('document.documentElement.scrollWidth - innerWidth')
+            assert overflow <= 1, f'{label} overflows a {width}px viewport by {overflow}px'
+            record(f'{label} has no horizontal overflow at {width}px')
+        page.set_viewport_size({'width': 1440, 'height': 1100})
     page.on('dialog', lambda dialog: dialog.accept())
     sign_in('member')
     page.get_by_role('heading', name='今天，也有新的灵感。').wait_for()
@@ -110,6 +121,8 @@ def run_workflows(page, output):
     assert page.locator('main .tag.pending').count() == 1
     expect(page.locator('[data-media]')).to_have_attribute('src', re.compile(r'^blob:'))
     record('image upload and pending post persist through API; untrusted HTML is text')
+    post_hash = page.evaluate('location.hash')
+    assert post_hash.startswith('#post/'), post_hash
     sign_in('owner'); route('#manage')
     article = page.locator('article').filter(has=page.get_by_role('heading', name='浏览器验收：森林里的新镜头 ↗'))
     article.get_by_role('button', name='通过审核').click()
@@ -143,7 +156,24 @@ def run_workflows(page, output):
     page.get_by_role('button', name='取消我的报名', exact=True).click()
     page.get_by_role('button', name='报名参加', exact=True).wait_for()
     record('member registers and cancels an event from the UI')
+    for value, label in (
+        ('#clubs', 'club directory'),
+        ('#compose', 'compose form'),
+        ('#events', 'event list'),
+        ('#event/screening', 'event detail'),
+        ('#mine', 'my submissions'),
+        (post_hash, 'post detail'),
+        ('#profile', 'account and handover page'),
+    ):
+        layout(value, label)
     sign_in('owner'); route('#manage')
+    for value, label in (('#manage', 'owner dashboard'), ('#new-event', 'event creation form')):
+        layout(value, label)
+    page.set_viewport_size({'width': 390, 'height': 900})
+    route('#manage')
+    expect(page.locator('#main .state.loading')).to_have_count(0)
+    page.screenshot(path=str(output / 'mobile-manage.png'), full_page=True)
+    page.set_viewport_size({'width': 1440, 'height': 1100})
     page.locator('select[name="to_user_id"]').select_option('u-next')
     page.locator('form[data-form="handover"] input[type="checkbox"]').check()
     page.get_by_role('button', name='发起交接', exact=True).click()

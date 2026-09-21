@@ -35,3 +35,19 @@
 ## 未完成的验收
 
 微信/QQ 真正 code 交换、隐私授权、开发者工具编译、基础库兼容、真机图片/网络/生命周期、平台审核；实际部署 HTTPS/限流/大请求拦截；联网依赖漏洞扫描；全页无障碍审计；生产数据删除及灾备演练。这些不记为通过。
+
+## 补充验证：扩展响应式布局检查（2026-09-21 17:19，本地）
+
+`scripts/e2e.py` 新增 `layout()`：逐路由打开页面，断言 `document.documentElement.scrollWidth <= innerWidth + 1`。
+
+| 检查 | 结果 | 证据与边界 |
+| --- | --- | --- |
+| `python -m pytest -q` | **58 passed** | 本轮未修改 `server/`、`web/`、`mini/` 代码 |
+| `python scripts/build_mini.py` | 微信与 QQ 两套源码包生成成功 | 仍未运行宿主编译器 |
+| `python scripts/check.py` | **66 个 Python/JavaScript 文件解析通过** | 含生成包 |
+| `python scripts/e2e.py --bridge` | **33 项检查通过**（原 15 项 + 18 项布局检查） | 同源 UI 离线渲染 + 真实临时 HTTP API；新增社团目录、发布、活动列表、活动详情、我的投稿、作品详情、账号与交接、社长工作台、发起活动共 9 个路由 × 320 / 390 px；动态页仍为 320 / 390 / 768 / 1440 px。`artifacts/mobile-manage.png` 为 390 px 社长工作台截图 |
+| 远端 CI | **未重新执行** | 本轮只改测试脚本与文档；远端结论仍以 `c63ce46` 为准 |
+
+本机 Windows 简体中文环境复现时需设 `PYTHONUTF8=1`（`$env:PYTHONUTF8='1'`）：默认 GBK 解码会让 `test_build`、`test_mcp`、`test_mcp_live` 的 5 项子进程输出检查误报失败，设置后 58 项全绿；这是本机环境差异，不是被测行为变化。
+
+本轮未改变"未完成的验收"清单：浏览器原生 HTTP 导航、微信/QQ 真机与平台审核仍未验证，不因本轮结果改变。
