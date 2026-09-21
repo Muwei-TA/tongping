@@ -1,0 +1,43 @@
+<view class="screen">
+  <view class="brand">同频</view>
+<view class="subtitle">{{clubName}} · 我们的共同空间</view>
+  <view class="nav">
+<navigator url="/pages/clubs/index">社团</navigator>
+<navigator url="/pages/events/index">活动</navigator>
+<navigator url="/pages/profile/index">我的</navigator>
+<navigator wx:if="{{owner}}" url="/pages/manage/index">社长工作台</navigator>
+</view>
+  <view class="hero">
+<view class="title">作品不必完成，交流可以先开始。</view>
+<view class="subtitle">带上你的半成品，让同伴成为第一个观众。</view>
+</view>
+  <view class="row">
+<button bindtap="filter" data-kind="">全部</button>
+<button bindtap="filter" data-kind="work">作品</button>
+<button bindtap="filter" data-kind="knowledge">知识</button>
+<button bindtap="filter" data-kind="question">提问</button>
+</view>
+  <form bindsubmit="search">
+<input name="q" value="{{q}}" maxlength="100" placeholder="搜索当前社团内容"/>
+<button form-type="submit">搜索</button>
+</form>
+  <navigator url="/pages/compose/index">
+<button class="primary">＋ 发布一点新东西</button>
+</navigator>
+  <view wx:if="{{error}}" class="error">{{error}}<navigator url="/pages/profile/index">前往登录</navigator>
+</view>
+  <view wx:if="{{busy}}" class="empty">正在读取…</view>
+  <view wx:for="{{items}}" wx:key="id" class="card">
+<view class="meta">{{item.author_name}} · {{item.dateLabel}}<text class="tag">{{item.kindLabel}}</text>
+</view>
+<view class="title">{{item.title}}</view>
+<view class="body">{{item.body}}</view>
+<view wx:if="{{item.feedback}}" class="feedback">想听听你的建议：{{item.feedback}}</view>
+<button data-id="{{item.id}}" bindtap="open">查看作品与反馈 →</button>
+</view>
+  <view wx:if="{{!busy &amp;&amp; !items.length}}" class="empty">还没有可见内容。先加入社团，或分享一次尝试。</view>
+  <view class="row">
+<button bindtap="previous" disabled="{{busy || offset === 0}}">上一页</button>
+<button bindtap="more" disabled="{{busy || items.length &lt; 12}}">下一页</button>
+</view>
+</view>

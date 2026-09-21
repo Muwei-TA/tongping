@@ -1,0 +1,26 @@
+<view class="screen">
+<view wx:if="{{error}}" class="error">{{error}}</view>
+<view wx:if="{{post}}" class="card">
+<view class="meta">{{post.author_name}} · {{post.dateLabel}}</view>
+<text class="tag">{{post.kindLabel}}</text>
+<text class="tag">{{post.statusLabel}}</text>
+<view class="title">{{post.title}}</view>
+<view class="body">{{post.body}}</view>
+<image wx:if="{{imagePath}}" src="{{imagePath}}" mode="widthFix" class="cover"/>
+<view wx:if="{{post.feedback}}" class="feedback">想听听你的建议：{{post.feedback}}</view>
+<view wx:if="{{post.reason}}" class="notice">审核说明：{{post.reason}}</view>
+</view>
+<view class="section">认真回应，比一句“好看”更有用。</view>
+<view wx:for="{{comments}}" wx:key="id" class="card">
+<view class="meta">{{item.author_name}} · {{item.statusLabel}}</view>
+<view class="body">{{item.body}}</view>
+<view wx:if="{{item.reason}}" class="notice">{{item.reason}}</view>
+</view>
+<view class="meta">展示前 100 条可见反馈。</view>
+<form wx:if="{{post.status === 'approved'}}" bindsubmit="comment">
+<label>写下你的建议<textarea name="body" maxlength="2000" placeholder="具体哪里有效？有什么可尝试的改进？"/>
+</label>
+<button class="primary" form-type="submit" disabled="{{busy}}">提交反馈审核</button>
+</form>
+<navigator url="/pages/home/index">回到社团 →</navigator>
+</view>

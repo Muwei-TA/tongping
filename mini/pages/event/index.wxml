@@ -1,0 +1,19 @@
+<view class="screen">
+<view wx:if="{{error}}" class="error">{{error}}</view>
+<view wx:if="{{event}}" class="card">
+<text class="tag">{{event.dateLabel}}</text>
+<view class="title">{{event.title}}</view>
+<view class="meta">{{event.location}}</view>
+<view class="body">{{event.description}}</view>
+<view>{{event.confirmed}} / {{event.capacity}} 人已报名 · {{event.waiting}} 人候补</view>
+<view class="row">
+<text class="tag">{{event.statusLabel}}</text>
+<text class="tag">{{event.registrationLabel}}</text>
+</view>
+<view wx:if="{{closed}}" class="notice">报名通道已关闭。</view>
+<button wx:elif="{{registered}}" bindtap="cancel" disabled="{{busy}}">取消我的报名</button>
+<button wx:else class="primary" bindtap="register" disabled="{{busy}}">{{event.confirmed >= event.capacity ? '加入候补' : '报名参加'}}</button>
+<button wx:if="{{owner &amp;&amp; event.status === 'open'}}" class="danger" bindtap="cancelEvent" disabled="{{busy}}">取消整个活动</button>
+<view class="feedback">名额满后进入候补，取消后按顺序递补。首版不提供签到和学分。</view>
+</view>
+</view>

@@ -1,0 +1,40 @@
+<view class="screen">
+<view class="brand">一起做点有意思的</view>
+<view class="hero lavender">
+<view class="title">带上你的半成品。</view>
+<view>从线上交流，到共同经历。</view>
+</view>
+<view wx:if="{{error}}" class="error">{{error}}</view>
+<button wx:if="{{owner}}" bindtap="toggle">发起 / 收起活动表单</button>
+<form wx:if="{{showForm}}" bindsubmit="create" class="card">
+<label>活动名称<input name="title" maxlength="100"/>
+</label>
+<label>说明<textarea name="description" maxlength="5000"/>
+</label>
+<label>地点<input name="location" maxlength="200"/>
+</label>
+<label>开始时间（ISO 格式，含时区）<input name="start" placeholder="2026-10-01T19:00:00+08:00"/>
+</label>
+<label>结束时间<input name="end" placeholder="2026-10-01T21:00:00+08:00"/>
+</label>
+<label>名额<input name="capacity" type="number" value="20"/>
+</label>
+<button form-type="submit" class="primary" disabled="{{busy}}">发布活动</button>
+</form>
+<view wx:for="{{items}}" wx:key="id" class="card">
+<text class="tag">{{item.dateLabel}}</text>
+<view class="title">{{item.title}}</view>
+<view class="meta">{{item.location}}</view>
+<view>{{item.confirmed}} / {{item.capacity}} 人已报名 · {{item.waiting}} 人候补</view>
+<view class="row">
+<text class="tag">{{item.statusLabel}}</text>
+<text class="tag">{{item.registrationLabel}}</text>
+</view>
+<button bindtap="open" data-id="{{item.id}}">查看活动 →</button>
+</view>
+<view wx:if="{{!items.length &amp;&amp; !busy}}" class="empty">当前页没有活动。</view>
+<view class="row">
+<button bindtap="previous" disabled="{{busy || offset === 0}}">上一页</button>
+<button bindtap="more" disabled="{{busy || items.length &lt; 12}}">下一页</button>
+</view>
+</view>

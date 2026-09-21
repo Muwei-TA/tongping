@@ -1,0 +1,23 @@
+<view class="screen">
+<view class="brand">找到同频的人</view>
+<view class="subtitle">公开介绍不包含内部作品和成员名单。</view>
+<view wx:if="{{error}}" class="error">{{error}}</view>
+  <view wx:for="{{items}}" wx:key="id" class="card">
+<view class="title">{{item.name}}</view>
+<view>{{item.summary}}</view>
+<view class="feedback">共同约定：{{item.rules}}</view>
+<text class="tag">{{item.statusLabel}}</text>
+    <button wx:if="{{item.status === 'active'}}" class="primary" bindtap="enter" data-id="{{item.id}}">进入社团</button>
+    <view wx:elif="{{item.status === 'pending'}}" class="meta">申请等待社长审核中。</view>
+    <form wx:else bindsubmit="join" data-id="{{item.id}}">
+<label>申请理由<input name="reason" maxlength="500" placeholder="你为什么想加入？"/>
+</label>
+<checkbox-group name="accept_rules">
+<label class="check">
+<checkbox value="yes"/>我已阅读并同意社团约定</label>
+</checkbox-group>
+<button class="primary" form-type="submit" disabled="{{busy}}">申请加入</button>
+</form>
+  </view>
+<navigator url="/pages/profile/index">账号登录与交接 →</navigator>
+</view>

@@ -1,0 +1,5 @@
+{
+  "pages": ["pages/home/index", "pages/clubs/index", "pages/compose/index", "pages/post/index", "pages/events/index", "pages/event/index", "pages/manage/index", "pages/profile/index"],
+  "window": {"navigationBarTitleText": "同频", "navigationBarBackgroundColor": "#f4f6ee", "navigationBarTextStyle": "black", "backgroundColor": "#f4f6ee"},
+  "style": "v2"
+}

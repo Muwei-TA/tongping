@@ -1,0 +1,45 @@
+<view class="screen">
+<view class="brand">账号与交接</view>
+<view class="subtitle">让作品有回应，让经验有传承。</view>
+<view wx:if="{{error}}" class="error">{{error}}</view>
+<view wx:if="{{!profile}}" class="card">
+<view class="title">欢迎来到同频</view>
+<view>登录只建立账号，入社仍需审核。</view>
+<view wx:if="{{demo}}">
+<view class="notice">本地演示：所有社团、身份与内容都是虚构数据。</view>
+<picker range="{{personas}}" value="{{persona}}" bindchange="choose">{{personas[persona]}} ▾</picker>
+</view>
+<button class="primary" bindtap="login" disabled="{{busy}}">{{demo ? '进入演示社团' : '使用宿主账号登录'}}</button>
+</view>
+<view wx:if="{{profile}}">
+<view class="card">
+<view class="title">{{profile.name}}</view>
+<view class="meta">账号 ID：{{profile.id}}</view>
+<view class="nav">
+<navigator url="/pages/clubs/index">社团与申请</navigator>
+<navigator url="/pages/home/index">社团动态</navigator>
+<navigator wx:if="{{owner}}" url="/pages/manage/index">社长工作台</navigator>
+</view>
+<button bindtap="logout" disabled="{{busy}}">退出登录{{demo ? ' / 切换演示身份' : ''}}</button>
+</view>
+<view class="section">与我有关的交接</view>
+<view wx:for="{{handovers}}" wx:key="id" class="card">
+<view class="title">{{item.club_name}} → {{item.to_name}}</view>
+<text class="tag">{{item.statusLabel}}</text>
+<view class="meta">有效期至 {{item.expires}}</view>
+<button wx:if="{{item.canAccept}}" class="primary" bindtap="accept" data-id="{{item.id}}" disabled="{{busy}}">确认接任社长</button>
+</view>
+<view class="section">我的投稿</view>
+<view wx:for="{{posts}}" wx:key="id" class="card">
+<text class="tag">{{item.statusLabel}}</text>
+<view class="title">{{item.title}}</view>
+<view wx:if="{{item.reason}}" class="notice">{{item.reason}}</view>
+<button bindtap="open" data-id="{{item.id}}">查看内容</button>
+</view>
+<view class="row">
+<button bindtap="previous" disabled="{{busy || offset === 0}}">上一页</button>
+<button bindtap="more" disabled="{{busy || posts.length &lt; 12}}">下一页</button>
+</view>
+</view>
+<button bindtap="load" disabled="{{busy}}">重新读取</button>
+</view>

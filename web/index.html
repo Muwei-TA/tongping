@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#173f35"><title>同频 · 社团共同空间</title>
+  <link rel="stylesheet" href="/style.css"><script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳至内容</a>
+  <aside class="sidebar">
+    <a class="brand" href="#feed"><span class="brand-mark">同</span><span>同频<small>TONGPING</small></span></a>
+    <p class="sidebar-caption">群聊之外，我们的共同空间。</p>
+    <nav aria-label="主导航">
+      <a href="#feed">社团动态 <span>01</span></a><a href="#knowledge">共享知识 <span>02</span></a>
+      <a href="#events">一起活动 <span>03</span></a><a href="#clubs">我的社团 <span>04</span></a>
+      <a href="#mine">我的内容 <span>05</span></a><a href="#profile">账号与交接 <span>06</span></a>
+      <a href="#manage" id="manage-link" hidden>社长工作台 <span>↗</span></a>
+    </nav>
+    <a class="button primary" href="#compose">＋ 发布一点新东西</a>
+    <div class="sidebar-note"><strong>从一条认真的回应开始。</strong><p>展示半成品，分享走过的弯路，找到一起创作的人。</p><span>PRIVATE CLUB SPACE / v0.1</span></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><a class="mobile-brand" href="#feed">同频</a><div><span class="eyebrow">我们的共同空间</span><select id="club-select" aria-label="切换社团"></select></div><a id="account" class="account" href="#profile">登录</a></header>
+    <div id="demo-banner" class="demo-banner" hidden>本地联调模式 · 所有人物、社团和内容均为虚构。数据会保存到本机数据库。</div>
+    <main id="main" tabindex="-1" aria-live="polite"></main>
+    <footer>让作品有回应，让经验有传承。<span>仅社团成员可见 · 不做公开信息流</span></footer>
+  </div>
+  <nav class="bottom-nav" aria-label="移动端导航"><a href="#feed">动态</a><a href="#knowledge">知识</a><a class="create-tab" href="#compose" aria-label="发布内容">＋</a><a href="#events">活动</a><a href="#profile">我的</a></nav>
+  <div id="notice" role="status" hidden></div>
+</body>
+</html>

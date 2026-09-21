@@ -1,0 +1,66 @@
+<view class="screen">
+<view class="brand">社长工作台</view>
+<view class="subtitle">先看内容，再给出明确的审核理由。</view>
+<view wx:if="{{error}}" class="error">{{error}}</view>
+<view class="section">入社申请</view>
+<view wx:for="{{members}}" wx:key="user_id" class="card">
+<view class="title">{{item.name}}</view>
+<view>{{item.reason}}</view>
+<view class="row">
+<button class="primary" bindtap="reviewMember" data-id="{{item.user_id}}" data-status="active" disabled="{{busy}}">同意加入</button>
+<button bindtap="reviewMember" data-id="{{item.user_id}}" data-status="rejected" disabled="{{busy}}">拒绝申请</button>
+</view>
+</view>
+<view wx:if="{{!members.length}}" class="meta">暂无待审申请。</view>
+<view class="section">内容审核</view>
+<view wx:for="{{posts}}" wx:key="id" class="card">
+<view class="meta">{{item.author_name}} · {{item.kindLabel}}</view>
+<view class="title">{{item.title}}</view>
+<view class="body">{{item.body}}</view>
+<image wx:if="{{item.imagePath}}" src="{{item.imagePath}}" mode="widthFix" class="cover"/>
+<view wx:if="{{item.imageError}}" class="error">{{item.imageError}}，请重新读取后检查图片。</view>
+<form class="review" bindsubmit="review" data-type="posts" data-id="{{item.id}}">
+<input name="reason" maxlength="500" placeholder="退回理由（退回时必填）"/>
+<radio-group name="status">
+<label>
+<radio value="approved" checked/>通过审核</label>
+<label>
+<radio value="rejected"/>退回修改</label>
+</radio-group>
+<button form-type="submit" class="primary" disabled="{{busy || item.imageError}}">提交审核结果</button>
+</form>
+</view>
+<view wx:if="{{!posts.length}}" class="meta">当前页没有待审投稿。</view>
+<view class="row">
+<button bindtap="previous" disabled="{{busy || offset === 0}}">上一页</button>
+<button bindtap="more" disabled="{{busy || posts.length &lt; 12}}">下一页</button>
+</view>
+<view class="section">反馈审核</view>
+<view wx:for="{{comments}}" wx:key="id" class="card">
+<view class="meta">{{item.author_name}} → {{item.post_title}}</view>
+<view class="body">{{item.body}}</view>
+<form class="review" bindsubmit="review" data-type="comments" data-id="{{item.id}}">
+<input name="reason" maxlength="500" placeholder="退回理由（退回时必填）"/>
+<radio-group name="status">
+<label>
+<radio value="approved" checked/>通过审核</label>
+<label>
+<radio value="rejected"/>退回修改</label>
+</radio-group>
+<button form-type="submit" class="primary" disabled="{{busy}}">提交审核结果</button>
+</form>
+</view>
+<view class="meta">成员与反馈队列各展示前 100 条。</view>
+<view class="section">社长换届</view>
+<form class="card" bindsubmit="handover">
+<label>指定继任者<picker range="{{candidateNames}}" value="{{candidate}}" bindchange="chooseCandidate">{{candidateNames[candidate] || '没有可交接成员'}} ▾</picker>
+</label>
+<checkbox-group name="confirm">
+<label class="check">
+<checkbox value="yes"/>我已核对成员、内容与活动，确认发起权限交接。</label>
+</checkbox-group>
+<view class="notice">继任者需在自己的账号中确认。确认后，原社长立即失去管理权限。交接 48 小时有效。</view>
+<button class="primary" form-type="submit" disabled="{{busy || !candidates.length}}">发起交接</button>
+</form>
+<button bindtap="load" disabled="{{busy}}">重新读取工作台</button>
+</view>

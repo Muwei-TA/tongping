@@ -1,0 +1,23 @@
+<view class="screen">
+<view class="brand">发布一点新东西</view>
+<view class="subtitle">作品不必完美，反馈需要具体。</view>
+<view wx:if="{{error}}" class="error">{{error}}</view>
+<form bindsubmit="submit">
+<label>内容类型<picker range="{{kinds}}" value="{{kindIndex}}" bindchange="kind">{{kinds[kindIndex]}} ▾</picker>
+</label>
+<label>标题<input name="title" maxlength="100" placeholder="给这次分享起个名字"/>
+</label>
+<label>正文<textarea name="body" maxlength="10000" placeholder="你做了什么？遇到了什么问题？"/>
+</label>
+<label>希望获得哪方面的反馈？<input name="feedback" maxlength="500" placeholder="构图、节奏、实现方式……"/>
+</label>
+<button bindtap="choose">选择一张作品图片（可选）</button>
+<image wx:if="{{imagePath}}" src="{{imagePath}}" mode="widthFix" class="cover"/>
+<view class="feedback">仅当前社团可见。通过审核后才会向其他成员展示。图片最大 5 MB。</view>
+<checkbox-group name="consent">
+<label class="check">
+<checkbox value="yes"/>我拥有发布权限，并同意社团成员查看与反馈。</label>
+</checkbox-group>
+<button form-type="submit" class="primary" disabled="{{busy}}" loading="{{busy}}">提交审核</button>
+</form>
+</view>
